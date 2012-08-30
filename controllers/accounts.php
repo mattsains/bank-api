@@ -7,6 +7,6 @@ class Accounts extends CI_Controller {
 		
 		$uname=$this->users->get_name($id);
 		$accounts=$this->account->get_list($id);
-		print(json_encode(array('user'=>$uname, 'accounts'=>$accounts)));
+		echo(json_encode(array('user'=>$uname, 'accounts'=>$accounts)));
 	}
 }

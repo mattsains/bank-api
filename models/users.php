@@ -40,9 +40,17 @@ class Users extends CI_Model {
 	}
 	function process_auth()
 	{
-		if ($this->auth($this->input->post('uname'),$this->input->post('pass'))==false)
+		if (!isset($_SERVER['PHP_AUTH_USER'])) {
+			header('WWW-Authenticate: Basic realm="My Realm"');
+			header('HTTP/1.0 401 Unauthorized');
+			echo('Login required.');
+			die();
+		}
+		else if($this->auth($_SERVER['PHP_AUTH_USER'],$_SERVER['PHP_AUTH_PW'])==false)
 		{
-			print('Authentication failure.');
+			header('WWW-Authenticate: Basic realm="My Realm"');
+			header('HTTP/1.0 401 Unauthorized');
+			echo('Login required.');
 			die();
 		}
 	}
