@@ -27,4 +27,26 @@ class Account extends CI_Model {
 		$this->db->where('aid',$aid);
 		return $this->db->get('accounts')->row()->text;
     }
+	/// returns the balance on an account at a specific time. 
+	/// If no time is specified, then current balance is returned.
+	function get_balance($aid,$timestamp=0)
+	{
+		$aid=(int)$aid;
+		$timestamp=(int)$timestamp;
+		
+		//get debits
+		$this->db->select('sum(amount) as debits');
+		$this->db->where('fromid',$aid);
+		if ($timestamp!=0)
+		   $this->db->where('timestamp <=',$timestamp);
+		$debits=$this->db->get('transact')->row()->debits;
+		
+		//get credits
+		$this->db->select('sum(amount) as credits');
+		$this->db->where('toid',$aid);
+		if ($timestamp!=0)
+		   $this->db->where('timestamp <=',$timestamp);
+		$credits=$this->db->get('transact')->row()->credits;
+		return $credits-$debits;
+	}
 }

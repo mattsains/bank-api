@@ -9,4 +9,11 @@ class Accounts extends CI_Controller {
 		$accounts=$this->account->get_list($id);
 		echo(json_encode(array('user'=>$uname, 'accounts'=>$accounts)));
 	}
+	public function balance($id)
+	{
+		$id=(int)$id;
+		$this->load->model('account');
+		
+		echo($this->account->get_balance($id));
+	}
 }
