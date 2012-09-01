@@ -1,6 +1,6 @@
 <?php
 class Transaction extends CI_Model {
-    
+    // when inserting time, use: UNIX_TIMESTAMP(UTC_TIMESTAMP())
     function __construct($auth=true)
     {
         $this->load->database();
@@ -13,6 +13,7 @@ class Transaction extends CI_Model {
 	{
 		$timestamp=(int)$timestamp;
 		$aid=(int)$aid;
+		
 		$this->db->where('fromid',$aid);
 		$this->db->or_where('toid',$aid);
 		
@@ -28,7 +29,8 @@ class Transaction extends CI_Model {
 		$to=(int)$to;
 		$amount=abs($amount); //this line might need to change, but for testing, 'ya know
 		
-		$data=array('amount'=>$amount,
+		$data=array('timestamp'=>'UNIX_TIMESTAMP(UTC_TIMESTAMP())',
+					'amount'=>$amount,
 					'toid'=>$to,
 					'fromid'=>$from);
 		$this->db->insert('transact',$data);
