@@ -7,8 +7,8 @@ class Debug extends CI_Controller {
 	}
 	public function auth($usr,$pass)
 	{
-		$this->load->model('users');
-		if ($this->users->auth($usr,$pass))
+		$this->load->model('user');
+		if ($this->user->auth($usr,$pass))
 		echo('Authenticated.');
 		else echo('Incorrect.');
 	}

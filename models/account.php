@@ -6,6 +6,7 @@ class Account extends CI_Model {
         $this->load->database();
 		parent::__construct();
     }
+	/// returns a list of all accounts owned by a given user id
 	function get_list($uid)
 	{
 	    $uid=(int)$uid;
@@ -18,6 +19,7 @@ class Account extends CI_Model {
 		}
 		return $returnable;
 	}
+	/// returns the name of a given account
 	function get_text($aid)
 	{
 		$aid=(int)$aid;
