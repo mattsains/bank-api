@@ -1,6 +1,6 @@
 <?php
 class Accounts extends CI_Controller {
-	public function pull($id)
+	public function index($id)
 	{
 		$this->load->model('account');
 		$this->load->model('users');
