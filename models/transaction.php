@@ -19,11 +19,21 @@ class Transaction extends CI_Model {
 		
 		if ($timestamp!==0)
 		  $this->db->where('timestamp >=',$timestamp);
-		return $this->db->get('transact')->result();
+		$return=array();
+		foreach($this->db->get('transact')->result() as $row)
+		{
+			$return[]=array('tid'=>(int)$row->tid, 
+			                'timestamp'=>(int)$row->timestamp, 
+							'amount'=>(float)$row->amount, 
+							'fromid'=>(int)$row->fromid, 
+							'toid'=>(int)$row->toid,
+							'text'=>$row->fromid===$aid?$row->fromtext:$row->totext);
+		}
+		return $return;
 	}
 	/// debits an account and credits another with an amount specified.
 	/// VERY INSECURE AT THE MOMENT - anyone can transfer anything
-	function transfer($from, $to, $amount)
+	function transfer($from, $fromtext, $to, $totext, $amount)
 	{
 		$from=(int)$from;
 		$to=(int)$to;
@@ -32,7 +42,9 @@ class Transaction extends CI_Model {
 		$data=array('timestamp'=>time(),
 					'amount'=>$amount,
 					'toid'=>$to,
-					'fromid'=>$from);
+					'totext'=>$totext,
+					'fromid'=>$from,
+					'fromtext'=>$fromtext);
 		$this->db->insert('transact',$data);
 		return $this->db->insert_id();
 	}

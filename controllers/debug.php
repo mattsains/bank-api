@@ -18,4 +18,9 @@ class Debug extends CI_Controller {
 		$this->transaction->transfer(0,$aid,500);
 		echo "done.";
 	}
+	public function trans($aid)
+	{
+		$this->load->model('transaction');
+		var_dump($this->transaction->get_since($aid));
+	}
 }

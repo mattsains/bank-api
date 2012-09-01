@@ -1,6 +1,7 @@
 <?php
 class User extends CI_Model {
     /// makes sure the user is authenticated unless FALSE is passed
+	private $uid;
     function __construct($auth=true)
     {
         parent::__construct();
@@ -28,9 +29,7 @@ class User extends CI_Model {
 	/// returns true if the credentials provied are correct, else false
 	function auth($uid,$pass)
 	{
-		if($this->config->item('no_auth')) return true;
 		if (!is_int($uid)) $uid=$this->get_uid_from_uname($uid);
-		$uid=(int)$uid;
 		
 		$this->db->select('salt, hash');
 		$this->db->where('uid',$uid);
@@ -38,7 +37,18 @@ class User extends CI_Model {
 		if ($r->num_rows()<1) return false;
 		
 		$hash=sha1($r->row()->salt.$pass);
-		if ($hash===$r->row()->hash) return true;
+		if ($hash===$r->row()->hash)
+		{
+			$this->uid=$uid;
+			return true;
+		}
+		else return false;
+	}
+	/// either gives the current uid of the logged in user, or false if nobody is logged in.
+	function get_uid()
+	{
+		if (ISSET($this->uid))
+		   return $this->uid;
 		else return false;
 	}
 	/// forces login

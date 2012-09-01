@@ -7,6 +7,7 @@ class Account extends CI_Model {
 		parent::__construct();
     }
 	/// returns a list of all accounts owned by a given user id
+	/// format: list of integers-->aid's
 	function get_list($uid)
 	{
 	    $uid=(int)$uid;
@@ -19,13 +20,17 @@ class Account extends CI_Model {
 		}
 		return $returnable;
 	}
-	/// returns the name of a given account
-	function get_text($aid)
+	/// returns some important information about accounts
+	function get_details($aid)
 	{
 		$aid=(int)$aid;
-		$this->db->select('text');
+		$this->db->select(array('text','atid'));
 		$this->db->where('aid',$aid);
-		return $this->db->get('accounts')->row()->text;
+		
+		$row=$this->db->get('accounts')->row();
+		return array('text'=>$row->text,
+					 'atid'=>$row->atid,
+					 'balance'=>$this->get_balance($aid));
     }
 	/// returns the balance on an account at a specific time. 
 	/// If no time is specified, then current balance is returned.
@@ -48,5 +53,13 @@ class Account extends CI_Model {
 		   $this->db->where('timestamp <=',$timestamp);
 		$credits=$this->db->get('transact')->row()->credits;
 		return $credits-$debits;
+	}
+	/// returns the UID of the accountholder
+	function belongs_to($aid)
+	{
+		$aid=(int)$aid;
+		$this->db->select('uid');
+		$this->db->where('aid',$aid);
+		return $this->db->get('accounts')->row()->uid;
 	}
 }
