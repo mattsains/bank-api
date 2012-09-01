@@ -12,4 +12,10 @@ class Debug extends CI_Controller {
 		echo('Authenticated.');
 		else echo('Incorrect.');
 	}
+	public function addmoneys($aid)
+	{
+		$this->load->model('transaction');
+		$this->transaction->transfer(0,$aid,500);
+		echo "done.";
+	}
 }
