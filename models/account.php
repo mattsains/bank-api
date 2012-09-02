@@ -58,8 +58,12 @@ class Account extends CI_Model {
 	function belongs_to($aid)
 	{
 		$aid=(int)$aid;
+		if ($aid===0) return false; //special account which has no balance
 		$this->db->select('uid');
 		$this->db->where('aid',$aid);
-		return $this->db->get('accounts')->row()->uid;
+		$result=$this->db->get('accounts');
+		if ($result->num_rows<1)
+		   return false;
+		else return $result->row()->uid;
 	}
 }
