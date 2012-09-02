@@ -43,14 +43,14 @@ class Account extends CI_Model {
 		$this->db->select('sum(amount) as debits');
 		$this->db->where('fromid',$aid);
 		if ($timestamp!=0)
-		   $this->db->where('timestamp <=',$timestamp);
+			$this->db->where('timestamp <=',$timestamp);
 		$debits=$this->db->get('transact')->row()->debits;
 		
 		//get credits
 		$this->db->select('sum(amount) as credits');
 		$this->db->where('toid',$aid);
 		if ($timestamp!=0)
-		   $this->db->where('timestamp <=',$timestamp);
+			$this->db->where('timestamp <=',$timestamp);
 		$credits=$this->db->get('transact')->row()->credits;
 		return $credits-$debits;
 	}
@@ -63,7 +63,7 @@ class Account extends CI_Model {
 		$this->db->where('aid',$aid);
 		$result=$this->db->get('accounts');
 		if ($result->num_rows<1)
-		   return false;
+			return false;
 		else return $result->row()->uid;
 	}
 }

@@ -48,7 +48,7 @@ class User extends CI_Model {
 	function get_uid()
 	{
 		if (ISSET($this->uid))
-		   return $this->uid;
+			return $this->uid;
 		else return false;
 	}
 	/// forces login

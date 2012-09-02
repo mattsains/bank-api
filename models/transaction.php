@@ -18,7 +18,7 @@ class Transaction extends CI_Model {
 		$this->db->or_where('toid',$aid);
 		
 		if ($timestamp!==0)
-		  $this->db->where('timestamp >=',$timestamp);
+			$this->db->where('timestamp >=',$timestamp);
 		$return=array();
 		foreach($this->db->get('transact')->result() as $row)
 		{
