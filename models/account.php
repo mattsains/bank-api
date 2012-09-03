@@ -54,15 +54,15 @@ class Account extends CI_Model {
 		$credits=$this->db->get('transact')->row()->credits;
 		return $credits-$debits;
 	}
-	/// returns the UID of the accountholder
+	/// returns the UID of the accountholder. Returns false if the account does not exist
 	function belongs_to($aid)
 	{
 		$aid=(int)$aid;
-		if ($aid===0) return false; //special account which has no balance
+		if ($aid===0) return false; //special account which has no owner
 		$this->db->select('uid');
 		$this->db->where('aid',$aid);
 		$result=$this->db->get('accounts');
-		if ($result->num_rows<1)
+		if ($result->num_rows<1) //non-existent account
 			return false;
 		else return $result->row()->uid;
 	}
