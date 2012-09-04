@@ -14,7 +14,7 @@ class User extends CI_Model {
 		$this->db->select('uid');
 		$this->db->where('uname',$uname);
 		$r=$this->db->get('users');
-		if ($r->num_rows()<1) return array();
+		if ($r->num_rows()<1) return false;
 		else return $r->row()->uid;
 	}
 	/// returns the human name of a given user id
@@ -54,9 +54,10 @@ class User extends CI_Model {
 	/// resolves permissions
 	/// pass it a uid, and a permission (string as in db),
 	/// and it'll tell you whether this user is allowed that permission
-	function is_allowed($uid,$perm)
+	function is_allowed($perm,$uid=-1)
 	{
 		$uid=(int)$uid;
+		if ($uid===-1) $uid=$this->uid;
 		$pids=$this->get_pids($uid);
 		if ($pids===false) return false;
 		
@@ -110,6 +111,23 @@ class User extends CI_Model {
 			return false;
 			
 		return explode(',',$result->row()->pids);
+	}
+	/// basically a wrapper for get_pids
+	/// returns true if a bank employee. 
+	/// If no uid is given, assumed logged in user
+	function is_staff($uid=-1)
+	{
+		$uid=(int)$uid;
+		if ($uid==-1) $uid=$this->get_uid();
+		return $this->get_pids($uid)!=false;
+	}
+	///returns true if the userid exists
+	function exists($uid)
+	{
+		$uid=(int)$uid;
+		$this->db->select('NULL',false);
+		$this->db->where('uid',$uid);
+		return ($this->db->get('users')->num_rows>0);
 	}
 	/// forces login
 	function process_auth()

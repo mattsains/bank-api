@@ -66,4 +66,13 @@ class Account extends CI_Model {
 			return false;
 		else return $result->row()->uid;
 	}
+	/// returns true if the accountid exists
+	function exists($aid)
+	{
+		$aid=(int)$aid;
+		if ($aid==0) return false; //special account which has no owner.
+		$this->db->select('NULL',false);
+		$this->db->where('aid',$aid);
+		return ($this->db->get('accounts')->num_rows>0);
+	}
 }
