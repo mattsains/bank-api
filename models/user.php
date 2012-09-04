@@ -51,6 +51,37 @@ class User extends CI_Model {
 			return $this->uid;
 		else return false;
 	}
+	/// resolves permissions
+	/// pass it a uid, and a permission (string as in db),
+	/// and it'll tell you whether this user is allowed that permission
+	function is_allowed($uid,$perm)
+	{
+		$uid=(int)$uid;
+		$this->db->select('pids');
+		$this->db->where('uid',$uid);
+		$result=$this->db->get('users');
+		if ($result->num_rows<1)
+			return false;
+			
+		$pids=explode(',',$result->row()->pids);
+		
+		$query='SHOW COLUMNS FROM perms';
+		$perms=array();
+		foreach($this->db->query($query)->result() as $col)
+		{
+			if (!in_array($col->Field,array('pid','text','movelimit')))//fields of the db to ignore - they're not permissions
+				$perms[]=$col->Field;
+		}
+		if (!in_array($perm,$perms))
+			return false;
+			
+		$this->db->select('sum('.$perm.') as votes');
+		$this->db->where_in('pid',$pids);
+		$result=$this->db->get('perms');
+		if ($result->num_rows<1)
+			return false;
+		return $result->row()->votes>0;
+	}
 	/// forces login
 	function process_auth()
 	{
