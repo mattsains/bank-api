@@ -57,13 +57,8 @@ class User extends CI_Model {
 	function is_allowed($uid,$perm)
 	{
 		$uid=(int)$uid;
-		$this->db->select('pids');
-		$this->db->where('uid',$uid);
-		$result=$this->db->get('users');
-		if ($result->num_rows<1)
-			return false;
-			
-		$pids=explode(',',$result->row()->pids);
+		$pids=$this->get_pids($uid);
+		if ($pids===false) return false;
 		
 		$query='SHOW COLUMNS FROM perms';
 		$perms=array();
@@ -81,6 +76,32 @@ class User extends CI_Model {
 		if ($result->num_rows<1)
 			return false;
 		return $result->row()->votes>0;
+	}
+	/// gets the move limit of a user
+	function get_movelimit($uid)
+	{
+		$uid=(int)$uid;
+		$pids=$this->get_pids($uid);
+		if ($pids===false) return false;
+		
+		$this->db->select('MAX(movelimit) as movelim');
+		$this->db->where_in('pid',$pids);
+		$result=$this->get('perms');
+		if ($result->num_rows<1) return 0; //not a bank employee
+		
+		else return $result->row()->movelim;
+	}
+	/// returns an array of permission ids of a user
+	function get_pids($uid)
+	{
+		$uid=(int)$uid;
+		$this->db->select('pids');
+		$this->db->where('uid',$uid);
+		$result=$this->db->get('users');
+		if ($result->num_rows<1)
+			return false;
+			
+		return explode(',',$result->row()->pids);
 	}
 	/// forces login
 	function process_auth()
