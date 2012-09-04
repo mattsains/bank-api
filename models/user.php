@@ -84,12 +84,20 @@ class User extends CI_Model {
 		$pids=$this->get_pids($uid);
 		if ($pids===false) return false;
 		
-		$this->db->select('MAX(movelimit) as movelim');
+		$this->db->select('movelimit');
 		$this->db->where_in('pid',$pids);
 		$result=$this->get('perms');
 		if ($result->num_rows<1) return 0; //not a bank employee
-		
-		else return $result->row()->movelim;
+		$maxlimit=0;
+		foreach($result as $row)
+		{
+			if ($row->movelimit==-1)
+			{
+				$maxlimit=-1;
+				break;
+			} else $maxlimit=$row->movelimit>$maxlimit?$row->movelimit:$maxlimit;
+		}
+		return $maxlimit;
 	}
 	/// returns an array of permission ids of a user
 	function get_pids($uid)
