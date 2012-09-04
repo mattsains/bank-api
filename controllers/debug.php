@@ -23,4 +23,9 @@ class Debug extends CI_Controller {
 		$this->load->model('transaction');
 		var_dump($this->transaction->get_since($aid));
 	}
+	public function perms($uid,$perm)
+	{
+		$this->load->model('user');
+		var_dump($this->user->is_allowed($uid,$perm));
+	}
 }
