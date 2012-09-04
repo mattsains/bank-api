@@ -6,9 +6,7 @@ class Transactions extends CI_Controller {
 		$this->load->model('user');
 		$this->load->model('transaction');
 		$this->load->model('account');
-		
-		$owner=$this->account->belongs_to($aid);
-		
+				
 		if(($this->user->is_staff() && $this->account->exists($aid)) || ($this->account->belongs_to($aid)===$this->user->get_uid()))
 			$this->output
 				->set_content_type('application/json')
