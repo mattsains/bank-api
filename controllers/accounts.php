@@ -21,18 +21,17 @@ class Accounts extends CI_Controller {
 			$this->load->model('user');
 			$this->load->model('account');
 			$owner=$this->account->belongs_to($aid);
-			if (!$owner)
+			if (!($owner && $this->user->get_uid()===$owner))
 			{
-			   $this->output->set_status_header(404,"Account does not exist.");
-			   $this->output->set_output("Account does not exist.");
+			   $this->output->set_status_header(403,"This isn't your account!");
+			   $this->output->set_output("This isn't your account!");
 			}
-			else if ($this->user->get_uid()===$owner)
+			else
 			{
 				$this->output
 				  ->set_content_type('application/json')
 				  ->set_output(json_encode($this->account->get_balance($aid)));
 			}
-			else $this->output->set_status_header(403,"This isn't your account!");
 		}
 		else $this->output->set_status_header(400,"No account specified.");
 	}
