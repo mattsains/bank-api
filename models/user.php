@@ -164,14 +164,14 @@ class User extends CI_Model {
 	{
 		if ($uid==-1) $uid=$this->user->get_uid();
 		$uid=(int)$uid;
-		$this->db->select('uname,name,email');
+		$this->db->select('uname,name,email,locked');
 		$this->db->where('uid',$uid);
 		$result=$this->db->get('users');
 		if ($result->num_rows<1) return false;
 		else
 		{
 		$row=$result->row();
-		return array('uname'=>$row->uname,'name'=>$row->name,'email'=>$row->email);
+		return array('uname'=>$row->uname,'name'=>$row->name,'email'=>$row->email,'locked'=>(bool)$row->locked);
 		}
 	}
 	/// lock/unlock a user
@@ -180,6 +180,6 @@ class User extends CI_Model {
 		$uid=(int)$uid;
 		$lock=(bool)$lock;
 		$this->db->where('uid',$uid);
-		$this->db->update('lock',$lock?1:0);
+		$this->db->update('users',array('locked'=>$lock?1:0));
 	}
 }
