@@ -33,6 +33,7 @@ class User extends CI_Model {
 		
 		$this->db->select('salt, hash');
 		$this->db->where('uid',$uid);
+		$this->db->where('locked',false);
 		$r=$this->db->get('users');
 		if ($r->num_rows()<1) return false;
 		
@@ -48,7 +49,7 @@ class User extends CI_Model {
 	function get_uid()
 	{
 		if (ISSET($this->uid))
-			return $this->uid;
+			return (int)$this->uid;
 		else return false;
 	}
 	/// resolves permissions
@@ -109,8 +110,11 @@ class User extends CI_Model {
 		$result=$this->db->get('users');
 		if ($result->num_rows<1)
 			return false;
-			
-		return explode(',',$result->row()->pids);
+		$row=$result->row();
+		$pids=explode(',',$row->pids);
+		if (count($pids)<1) return false;
+		if ($pids[0]=='') return false;
+		return $pids;
 	}
 	/// basically a wrapper for get_pids
 	/// returns true if a bank employee. 
@@ -145,5 +149,37 @@ class User extends CI_Model {
 			echo('Login required.');
 			die();
 		}
+	}
+	/// pretty obvious
+	function change_psw($uid,$psw)
+	{
+		$uid=(int)$uid;
+		$this->load->helper('passwd');
+		$sh=salted_hash($psw);
+		$this->db->where('uid',$uid);
+		$this->db->update('users',$sh);
+	}
+	/// gets stuff about user like email, uname, etc
+	function get_data($uid=-1)
+	{
+		if ($uid==-1) $uid=$this->user->get_uid();
+		$uid=(int)$uid;
+		$this->db->select('uname,name,email');
+		$this->db->where('uid',$uid);
+		$result=$this->db->get('users');
+		if ($result->num_rows<1) return false;
+		else
+		{
+		$row=$result->row();
+		return array('uname'=>$row->uname,'name'=>$row->name,'email'=>$row->email);
+		}
+	}
+	/// lock/unlock a user
+	function set_lockstate($uid,$lock)
+	{
+		$uid=(int)$uid;
+		$lock=(bool)$lock;
+		$this->db->where('uid',$uid);
+		$this->db->update('lock',$lock?1:0);
 	}
 }
