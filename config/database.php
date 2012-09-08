@@ -49,8 +49,8 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'root';
-$db['default']['password'] = 'arthurdent';
+$db['default']['username'] = 'bankapi';
+$db['default']['password'] = 'sb7dfyGyTZaXCT3H';
 $db['default']['database'] = 'bank';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
