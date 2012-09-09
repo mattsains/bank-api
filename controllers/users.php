@@ -20,7 +20,7 @@ class Users extends CI_Controller {
 		$this->load->model('user');
 		$uid=(int)$this->input->post('uid');
 		$newlock=(bool)$this->input->post('lock');
-		if ($this->user->is_allowed('canlockuser') && $this->user->exists($uid))
+		if ($this->user->is_allowed('lockuser') && $this->user->exists($uid))
 		{
 			$this->user->set_lockstate($uid,$newlock);
 			$data=$this->user->get_data($uid);
