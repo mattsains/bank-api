@@ -221,5 +221,19 @@ class User extends CI_Model {
         
         return true;
     }
+    function set_email($uid, $email)
+    {
+        $uid=(int)$uid;
+        $email=(string)$email;
+        
+        $this->load->helper('email');
+        if (!valid_email($email) || $this->exists($uid))
+            return false;
+        
+        $this->where('uid',$uid);
+        $this->update('users',array('email',$email));
+        
+        return true;
+    }
     function 
 }
