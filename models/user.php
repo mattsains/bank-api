@@ -235,4 +235,23 @@ class User extends CI_Model {
         
         return true;
     }
+    //I'm not sure how useful this will be after a user is initialised, but I'm sure one day, somehow...
+    function set_name($uid, $name)
+    {
+        $uid=(int)$uid;
+        $name=(string)$name;
+        
+        if (!$this->exists($uid))
+            return false;
+        //clean up
+        $this->load->helper('security');
+        $this->load->helper('string');
+        $name=xss_clean($name);
+        $name=strip_quotes($name);
+        
+        $this->db->where('uid',$uid);
+        $this->db->update('users',array('name',$name));
+        
+        return true;
+    }
 }
