@@ -227,7 +227,7 @@ class User extends CI_Model {
         $email=(string)$email;
         
         $this->load->helper('email');
-        if (!valid_email($email) || $this->exists($uid))
+        if (! (valid_email($email) && $this->exists($uid))) //lol De Morgan's
             return false;
         
         $this->where('uid',$uid);
@@ -235,5 +235,3 @@ class User extends CI_Model {
         
         return true;
     }
-    function 
-}
