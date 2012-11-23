@@ -101,7 +101,7 @@ class User extends CI_Model {
 		}
 		return $maxlimit;
 	}
-	/// returns an array of permission ids of a user
+	/// returns an array of permission group ids of a user
 	function get_pids($uid)
 	{
 		$uid=(int)$uid;
@@ -182,4 +182,44 @@ class User extends CI_Model {
 		$this->db->where('uid',$uid);
 		$this->db->update('users',array('locked'=>$lock?1:0));
 	}
+    /// add/remove user from a permission group
+    ///  set add to false for removal
+    function set_pid($uid, $pid, $add=true)
+    {
+        $uid=(int)$uid;
+        $pid=(int)$pid;
+        $value=(bool)$value;
+        
+        //check for existence of permission group
+        $this->db->select('pid')
+        $this->db->where('pid',$pid);
+        $result=$this->db->get('perms');
+        if ($result->num_rows<1) 
+            return false; //permission group does not exist
+                
+        $this->db->select('pids');
+        $this->db->where('uid',$uid);
+        $result=$this->db->get('users');
+        //check for existence of user. 
+        // Could use the user::exists() function, but since we already have to get stuff from users,
+        // let's just do it here
+        //the field pids holds comma separated values
+        if ($result->num_rows<1)
+            return false;
+            
+        //pids are comma separated
+        $csv=$result->row()->pids; //TODO: probable error here. TEST
+        $pids=explode(',',$csv);
+        if ($add)
+            $pids[]=$pid; //add pid to pids
+        else
+            $pids=array_diff($pids, array($pid)); //remove
+        $pids=array_unique($pids); //cleanup
+        
+        $this->db->where('uid',$uid);
+        $this->db->update('users',array('pids',implode(',',$pids)));
+        
+        return true;
+    }
+    function 
 }
